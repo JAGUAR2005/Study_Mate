@@ -6,7 +6,7 @@
 - [ ] Education category selected.
 - [ ] Repository URL: `PASTE_PUBLIC_REPOSITORY_URL_HERE`
 - [ ] Repository is public (or shared with the addresses specified by Devpost) and contains an appropriate license.
-- [ ] Deployment URL: `PASTE_PUBLIC_DEPLOYMENT_URL_HERE`
+- [ ] Deployment URL: `PASTE_RENDER_DEPLOYMENT_URL_HERE`
 - [ ] README includes setup, sample data, environment variables, and run instructions.
 - [ ] Demo credentials or access instructions are included if needed.
 - [ ] No private credentials, API keys, service-role keys, personal PDFs, or real user data are present in Git, screenshots, logs, or the deployment.
@@ -36,8 +36,8 @@
 
 ## Submission details to paste into the final form
 
-- Repository URL: `PASTE_PUBLIC_REPOSITORY_URL_HERE`
-- Deployment URL: `PASTE_PUBLIC_DEPLOYMENT_URL_HERE`
+- Repository URL: `https://github.com/JAGGU2028/StudyMate`
+- Deployment URL: `PASTE_RENDER_DEPLOYMENT_URL_HERE`
 - Demo video URL: `PASTE_PUBLIC_YOUTUBE_URL_HERE`
 - Codex usage: “Codex was used throughout the build for architecture, implementation, debugging, UI iteration, RAG design, reader reliability, and release verification. The dated project memory records the major decisions and verification milestones.”
 - GPT-5.6 usage: “GPT-5.6 powers meaningful StudyMate functionality through the configured AI provider path for grounded definition, translation, note, and visualization generation. The demo shows these actions operating on retrieved PDF context.”

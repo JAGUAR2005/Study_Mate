@@ -23,16 +23,34 @@ folder to the hosting provider; do not create a second nested web-app folder.
 - `docs/wispr/` — documentation for that separate prototype
 
 These exclusions are enforced by `.gitignore` for local work and
-`.vercelignore` for Vercel uploads. Configure secrets only in the hosting
-provider's encrypted environment settings.
+`.vercelignore` for Vercel uploads. Render deploys from the Git repository,
+so the same `.gitignore` rules keep excluded files out of the repository.
+Configure secrets only in the hosting provider's encrypted environment
+settings.
 
-## Vercel settings
+## Render settings
 
-- Framework preset: Next.js
+- Service type: Web Service
+- Runtime: Node
 - Root directory: project root
-- Install command: `npm install`
-- Build command: `npm run build`
-- Output directory: leave blank/default
+- Region: Virginia (or the nearest available region)
+- Instance: Free for demo/testing
+- Build command: `npm install && npm run build`
+- Start command: `npm run start -- --hostname 0.0.0.0`
+
+Render supplies the `PORT` value automatically. Do not add a custom `PORT`
+environment variable.
+
+After the first successful deploy, set the Supabase Authentication Site URL
+and Redirect URL to the live Render URL if your Supabase project requires URL
+allowlisting. StudyMate currently uses anonymous sessions and does not collect
+email or password credentials:
+
+```text
+https://YOUR-RENDER-SERVICE.onrender.com
+```
+
+Deployment URL: `PASTE_RENDER_DEPLOYMENT_URL_HERE`
 
 Required production environment variables are listed in `.env.example` and
 `README.md`. Never copy the values from `.env.local` into the repository.

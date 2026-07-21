@@ -15,7 +15,7 @@ export function createSupabaseAdmin() {
 export async function userIdFromRequest(request: Request) {
   const authorization = request.headers.get("authorization");
   const token = authorization?.startsWith("Bearer ") ? authorization.slice(7) : null;
-  if (!token) throw new Error("Sign in before uploading or searching a personal library.");
+  if (!token) throw new Error("Create a private session before uploading or searching your personal library.");
   const admin = createSupabaseAdmin();
   const { data, error } = await admin.auth.getUser(token);
   if (error || !data.user) throw new Error("Your session has expired. Please sign in again.");

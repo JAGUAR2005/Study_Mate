@@ -4,7 +4,7 @@ StudyMate is a private, PDF-first reading companion for learners. It keeps the o
 
 ## What is working
 
-- Private anonymous Supabase sessions for a browser-scoped library, plus optional email/password accounts for returning users.
+- Private anonymous Supabase sessions for a browser-scoped library.
 - PDF upload, page-aware extraction, chunking, embeddings, and retrieval with pgvector.
 - A source-faithful PDF.js reader with page navigation, search, bookmarks, read history, and keyboard page turns.
 - Selection-only actions: Define, Translate, Visualize, and Note.
@@ -15,7 +15,7 @@ StudyMate is a private, PDF-first reading companion for learners. It keeps the o
 
 ## Privacy model
 
-Original PDFs are stored in a private Supabase Storage bucket. Page chunks and retrieval are scoped to the authenticated user through Row Level Security. Users may continue anonymously for a browser-scoped private session or sign in with a Supabase email/password account for a persistent library. Study artifacts, highlights, bookmarks, and history are saved locally in the active browser for the private reading experience; clearing site data clears those local reader aids.
+Original PDFs are stored in a private Supabase Storage bucket. Page chunks and retrieval are scoped to the authenticated anonymous user through Row Level Security. Each browser gets its own private reading space; no email, password, or personal credential is collected. Study artifacts, highlights, bookmarks, and history are saved locally in the active browser for the private reading experience; clearing site data clears those local reader aids.
 
 Selected text and the retrieved supporting PDF context are sent from the server to the configured AI provider to generate a study action. Do not upload documents you are not allowed to share with that provider.
 
@@ -24,22 +24,33 @@ Selected text and the retrieved supporting PDF context are sent from the server 
 1. Install dependencies with `npm install`.
 2. Copy `.env.example` to `.env.local` and supply the required Supabase and AI values.
 3. Run [supabase/schema.sql](./supabase/schema.sql) in the Supabase SQL editor. It is safe to rerun for this MVP.
-4. In Supabase Authentication, enable Anonymous sign-ins and configure Email provider if account sign-in is desired. For a local demo, configure or disable CAPTCHA so anonymous sessions can be created.
+4. In Supabase Authentication, enable Anonymous sign-ins. For a local demo, configure or disable CAPTCHA so anonymous sessions can be created.
 5. Start the app with `npm run dev` and open `http://127.0.0.1:3000`.
 
 Required environment values:
 
 ```bash
-AI_PROVIDER=openai
-OPENAI_API_KEY=
+AI_PROVIDER=gemini
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-2.5-flash
+GEMINI_EMBEDDING_MODEL=gemini-embedding-2
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-Set `AI_PROVIDER=gemini` and `GEMINI_API_KEY` to use Gemini instead. Optional `HEADROOM_BASE_URL`, `HEADROOM_API_KEY`, and `HEADROOM_TOKEN_BUDGET` enable server-side context compression.
+Set `AI_PROVIDER=openai` and `OPENAI_API_KEY` to use OpenAI instead. Optional `HEADROOM_BASE_URL`, `HEADROOM_API_KEY`, and `HEADROOM_TOKEN_BUDGET` enable server-side context compression.
 
 Never commit `.env.local`, API keys, Supabase service-role credentials, user PDFs, or real account credentials. The `.gitignore` file excludes local environment files; deployment secrets must be entered only in the hosting provider’s encrypted environment settings.
+
+## Hosted deployment
+
+The recommended low-cost full-stack deployment is a Render Node Web Service.
+Use `npm install && npm run build` as the build command and
+`npm run start -- --hostname 0.0.0.0` as the start command. Render supplies
+the runtime `PORT` automatically. Add the Supabase and Gemini variables in
+Render's encrypted environment settings, then add the resulting Render URL to
+Supabase Authentication → URL Configuration.
 
 ## Quality checks
 

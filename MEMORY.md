@@ -109,11 +109,11 @@ This file acts as the project's changelog, tracking decisions, updates, and prog
 - **Configured locally:** Gemini and Supabase are operational for the local private-session flow; the end-to-end upload → index → open-reader path has been verified.
 - **Next priority:** Deploy a clean hosted build, run a fresh anonymous-session upload → reader → study-action smoke test, then record the three-minute submission walkthrough and publish the repository.
 
-## [2026-07-21] - Account Access and Publication Safety
-- **Authentication:** Added visible Supabase email/password sign-in, account creation, and sign-out controls to the Library while preserving the no-personal-details anonymous private-session path.
-- **Privacy:** Confirmed local environment files are ignored; documented that API keys, service-role credentials, private PDFs, real user data, and account credentials must never enter Git, screenshots, logs, or the deployment.
+## [2026-07-21] - Publication Safety
+- **Privacy:** Kept authentication limited to Supabase anonymous private sessions; the Library does not collect email or password credentials.
+- **Privacy controls:** Confirmed local environment files are ignored; API keys, service-role credentials, private PDFs, real user data, and account credentials must never enter Git, screenshots, logs, or the deployment.
 - **Submission package:** Added an MIT `LICENSE` and explicit placeholders for the repository URL, deployment URL, demo URL, Codex usage, GPT-5.6 usage, and primary `/feedback` session ID.
-- **Verification:** `npm run check` passes after the authentication and documentation changes.
+- **Verification:** `npm run check` passes after the privacy and documentation changes.
 - **Status:** Release candidate is code-complete for launch preparation; public deployment, hosted smoke test, demo recording, and final URL replacement remain.
 
 ## [2026-07-21] - Hosting Package Organization
@@ -121,3 +121,9 @@ This file acts as the project's changelog, tracking decisions, updates, and prog
 - **Exclusions:** Added `.vercelignore` and tightened `.gitignore` to exclude secrets, generated output, the unrelated `WisprClone` Swift prototype, and its documentation from the StudyMate hosting package.
 - **Documentation:** Added `DEPLOYMENT.md` with the included files, excluded files, and Vercel settings.
 - **Verification:** `npm run check` passes after packaging changes.
+
+## [2026-07-22] - Render and Supabase Deployment Configuration
+- **Hosting:** Documented Render Web Service as the active hosting path for the full-stack Next.js application.
+- **Runtime:** Recorded the Render build command `npm install && npm run build` and start command `npm run start -- --hostname 0.0.0.0`; documented that Render supplies `PORT` automatically.
+- **Backend:** Documented Supabase as the production authentication, private storage, database, vector retrieval, and RLS backend; the live Render URL must be added to Supabase Authentication URL Configuration.
+- **Privacy:** Production secrets remain deployment-provider environment variables and are not written to Git or project documentation.

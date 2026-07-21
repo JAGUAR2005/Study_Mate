@@ -33,30 +33,6 @@ export async function createPrivateSession() {
   return data.session;
 }
 
-export async function signInWithPassword(email: string, password: string) {
-  const supabase = getBrowserSupabase();
-  if (!supabase) throw new Error("Connect Supabase first by adding its public URL and anon key to .env.local.");
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error || !data.session) throw new Error(error?.message ?? "Supabase did not return a signed-in session.");
-  return data.session;
-}
-
-export async function signUpWithPassword(email: string, password: string) {
-  const supabase = getBrowserSupabase();
-  if (!supabase) throw new Error("Connect Supabase first by adding its public URL and anon key to .env.local.");
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  if (error) throw new Error(error.message);
-  if (!data.session) throw new Error("Account created. Check your email to confirm it, then sign in.");
-  return data.session;
-}
-
-export async function signOutBrowser() {
-  const supabase = getBrowserSupabase();
-  if (!supabase) return;
-  const { error } = await supabase.auth.signOut();
-  if (error) throw new Error(error.message);
-}
-
 export async function getBrowserAccessToken() {
   const supabase = getBrowserSupabase();
   if (!supabase) throw new Error("Connect Supabase first by adding its public URL and anon key to .env.local.");

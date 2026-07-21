@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
-import { createPrivateSession, getBrowserAccessToken, getBrowserSession, getBrowserSupabase, signInWithPassword, signOutBrowser, signUpWithPassword } from "@/lib/rag/browser-session";
+import { createPrivateSession, getBrowserAccessToken, getBrowserSession, getBrowserSupabase } from "@/lib/rag/browser-session";
 import { StudyMateLogo } from "@/components/brand/studymate-brand";
 import type { UploadedBook } from "@/types/books";
 
@@ -32,11 +32,6 @@ export default function LibraryPage() {
   const [phase, setPhase] = useState("Waiting for a PDF");
   const [books, setBooks] = useState<LibraryBook[]>([]);
   const [isLoadingBooks, setIsLoadingBooks] = useState(false);
-  const [accountEmail, setAccountEmail] = useState<string | null>(null);
-  const [authMode, setAuthMode] = useState<"signin" | "signup">("signin");
-  const [authEmail, setAuthEmail] = useState("");
-  const [authPassword, setAuthPassword] = useState("");
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   async function loadBooks() {
     setIsLoadingBooks(true);
@@ -60,7 +55,6 @@ export default function LibraryPage() {
       const session = await getBrowserSession();
       if (!cancelled) {
         setConnection(session ? "ready" : "needs-session");
-        setAccountEmail(session?.user.is_anonymous ? null : session?.user.email ?? null);
         if (session) void loadBooks();
       }
     }
@@ -79,39 +73,6 @@ export default function LibraryPage() {
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Supabase could not create a private session.");
     } finally { setIsConnecting(false); }
-  }
-
-  async function authenticate() {
-    if (!authEmail.trim() || authPassword.length < 6) {
-      setMessage("Enter a valid email and a password with at least 6 characters.");
-      return;
-    }
-    setIsAuthenticating(true);
-    try {
-      const session = authMode === "signin"
-        ? await signInWithPassword(authEmail.trim(), authPassword)
-        : await signUpWithPassword(authEmail.trim(), authPassword);
-      setAccountEmail(session.user.email ?? null);
-      setConnection("ready");
-      setAuthPassword("");
-      setMessage("Signed in. Your library is now tied to your account and protected by Row Level Security.");
-      await loadBooks();
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Could not complete account sign-in.");
-    } finally { setIsAuthenticating(false); }
-  }
-
-  async function signOut() {
-    setIsAuthenticating(true);
-    try {
-      await signOutBrowser();
-      setAccountEmail(null);
-      setBooks([]);
-      setConnection("needs-session");
-      setMessage("Signed out. Your account library is no longer available in this browser.");
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Could not sign out.");
-    } finally { setIsAuthenticating(false); }
   }
 
   async function upload(file?: File) {
@@ -186,12 +147,7 @@ export default function LibraryPage() {
     <section className={`connection-card connection-${connection}`} aria-live="polite">
       <span className="connection-orb" />
       <div><p className="eyebrow">{connection === "ready" ? "Private space connected" : connection === "checking" ? "Checking your reading space" : "One small setup step"}</p><strong>{connection === "ready" ? "You’re ready to add a book." : connection === "checking" ? "Connecting to Supabase…" : connection === "missing" ? "Supabase needs its public keys." : "Create a private session to upload."}</strong><small>{connection === "ready" ? "Your library is scoped to this account and protected by Row Level Security." : connection === "missing" ? "Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local, then restart the server." : connection === "needs-session" ? "No password or personal details are needed for this demo. This browser gets its own private library." : "Verifying your private library connection."}</small></div>
-      {connection === "needs-session" && <div className="connection-actions"><button className="connect-button" onClick={() => void connectPrivateSession()} disabled={isConnecting || isAuthenticating}>{isConnecting ? "Connecting…" : "Continue privately ↗"}</button><button className="text-button" onClick={() => document.getElementById("account-access")?.scrollIntoView({ behavior: "smooth" })}>Sign in ↗</button></div>}
-      {connection === "ready" && accountEmail && <div className="account-chip"><span>{accountEmail}</span><button className="text-button" onClick={() => void signOut()} disabled={isAuthenticating}>Sign out</button></div>}
-    </section>
-    <section className="account-access" id="account-access" aria-label="Account sign in">
-      <div><p className="eyebrow">Account access</p><h2>{accountEmail ? "Your account is connected." : "Keep your library across devices."}</h2><p>{accountEmail ? "Your uploaded PDFs are scoped to this signed-in account. Private credentials never leave Supabase authentication." : "Use an email and password for a persistent account, or continue privately in this browser without entering personal details."}</p></div>
-      {!accountEmail && <form className="account-form" onSubmit={(event) => { event.preventDefault(); void authenticate(); }}><div className="auth-tabs"><button type="button" className={authMode === "signin" ? "is-active" : ""} onClick={() => setAuthMode("signin")}>Sign in</button><button type="button" className={authMode === "signup" ? "is-active" : ""} onClick={() => setAuthMode("signup")}>Create account</button></div><label>Email<input type="email" autoComplete="email" value={authEmail} onChange={(event) => setAuthEmail(event.target.value)} placeholder="you@example.com" required /></label><label>Password<input type="password" autoComplete={authMode === "signin" ? "current-password" : "new-password"} value={authPassword} onChange={(event) => setAuthPassword(event.target.value)} placeholder="At least 6 characters" minLength={6} required /></label><button className="connect-button" type="submit" disabled={isAuthenticating}>{isAuthenticating ? "Working…" : authMode === "signin" ? "Sign in securely ↗" : "Create account ↗"}</button><small>Authentication is handled by Supabase. Never paste API keys or service credentials here.</small></form>}
+      {connection === "needs-session" && <button className="connect-button" onClick={() => void connectPrivateSession()} disabled={isConnecting}>{isConnecting ? "Connecting…" : "Create private session ↗"}</button>}
     </section>
     {selectedFile && !isUploading && <div className="selected-file"><span className="file-badge">PDF</span><div><strong>{selectedFile.name}</strong><small>{(selectedFile.size / (1024 * 1024)).toFixed(1)} MB · {progress === 100 ? "indexed and ready" : "ready to upload"}</small></div><button onClick={() => { setSelectedFile(null); setProgress(0); setPhase("Waiting for a PDF"); }} aria-label="Remove selected PDF">×</button></div>}
     <p className="library-message" role="status">{message}</p>
