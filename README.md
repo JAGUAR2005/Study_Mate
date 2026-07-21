@@ -11,7 +11,7 @@ StudyMate is a private, PDF-first reading companion for learners. It keeps the o
 - Highlight, underline, and strikethrough annotations saved for the current private reading copy.
 - Page, chapter/topic, and whole-book syllabus maps, plus infographic briefs.
 - Browser-native voice playback and a persistent preferred translation language.
-- Gemini as the default low-cost AI path, with optional OpenAI support and optional Headroom context compression.
+- OpenAI as the primary AI provider, with optional Gemini support for a lower-cost path and optional Headroom context compression.
 
 ## Privacy model
 
@@ -30,14 +30,14 @@ Selected text and the retrieved supporting PDF context are sent from the server 
 Required environment values:
 
 ```bash
-AI_PROVIDER=gemini
-GEMINI_API_KEY=
+AI_PROVIDER=openai
+OPENAI_API_KEY=
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-Set `AI_PROVIDER=openai` and `OPENAI_API_KEY` to use OpenAI instead. Optional `HEADROOM_BASE_URL`, `HEADROOM_API_KEY`, and `HEADROOM_TOKEN_BUDGET` enable server-side context compression.
+Set `AI_PROVIDER=gemini` and `GEMINI_API_KEY` to use Gemini instead. Optional `HEADROOM_BASE_URL`, `HEADROOM_API_KEY`, and `HEADROOM_TOKEN_BUDGET` enable server-side context compression.
 
 Never commit `.env.local`, API keys, Supabase service-role credentials, user PDFs, or real account credentials. The `.gitignore` file excludes local environment files; deployment secrets must be entered only in the hosting provider’s encrypted environment settings.
 
