@@ -1,0 +1,12 @@
+# Local-only secrets and generated output
+.env
+.env.local
+.next/
+node_modules/
+*.tsbuildinfo
+.DS_Store
+**/.DS_Store
+
+# Separate native Swift prototype; not part of the StudyMate web deployment.
+WisprClone/
+docs/wispr/
